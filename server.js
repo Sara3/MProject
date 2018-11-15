@@ -2,9 +2,31 @@ var connect = require('connect');
 var MongoClient = require("mongodb").MongoClient;
 var url = "mongodb://localhost:27017/";
 var serveStatic = require('serve-static');
+var express = require('express');
+var bodyParser = require('body-parser');
+
+var app = express();
+
+
+app.use(express.static('public'));
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
+// // parse application/json
+// app.use(bodyParser.json());
+// // parse application/x-www-form-urlencoded
+// app.use(bodyParser.urlencoded({ extended: false }));
+// // parse the raw data
+// app.use(bodyParser.raw());
+// // parse text
+// app.use(bodyParser.text());
+
+
 
 connect().use(serveStatic(__dirname)).listen(3000, function(){
   console.log('Server running on 3000...');
+
+
 
   MongoClient.connect(url, function(err, db) {
   if (err) throw err;
@@ -16,8 +38,12 @@ connect().use(serveStatic(__dirname)).listen(3000, function(){
     console.log("Collection created!");
 
 
+    app.post('api/v1/gist', function(req, res) {
 
-    //Post gist
+
+      console.log("requ----->",req)
+
+      //Post gist
     function postGist() {
       var gistObj = {sub: "file name", desc: "file description"}
       dbase.collection("gists").insertOne(gistObj, function(err, res) {
@@ -25,6 +51,11 @@ connect().use(serveStatic(__dirname)).listen(3000, function(){
         console.log("1 document inserted")
       })
     }
+
+
+    })
+
+    
 
 
 
